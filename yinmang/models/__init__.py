@@ -1,7 +1,7 @@
 from mongoengine import connect,disconnect_all
 from loguru import logger
 
-from yinmang.models.employer_model import Employers
+from yinmang.models.students_model import Students
 
 async def init_mongoengine(settings):
     host = (
