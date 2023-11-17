@@ -19,6 +19,11 @@ async def create_student(student: BaseStudents,StudentsService = Depends(Student
     student = StudentsService.add(student)
     return student
 
+@router.patch("/update/{student_id}",response_model=ResponseStudents)
+async def update_student(student_id: str,student: BaseStudents,student_service: StudentService = Depends(StudentService)):
+    student = student_service.patch(student_id,student)
+    return student
+
 @router.delete("/delete/{student_id}", response_model=BaseStudents)
 async def delete_student(student_id: str ,student_service : StudentService = Depends(StudentService)):
     student = student_service.delete_by_id(id=student_id)
