@@ -25,14 +25,12 @@ class BaseRepository:
         )
         if not items:
             raise NotFoundError(detail="not found")
-
         return items
 
     def get_by_id(self, id: str | ObjectId) -> Document:
         item = self.model.objects.with_id(id)
         if not item:
             raise NotFoundError(detail=f"ObjectId('{str(id)}') not found")
-
         return item
 
     def create(self, schema: None | BaseModel, **kwargs: int) -> Document:
