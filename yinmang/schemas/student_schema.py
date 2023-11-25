@@ -9,7 +9,7 @@ import datetime
 class BaseStudents(BaseSchema):
     first_name: str | None = None
     last_name: str | None = None
-    width: float | None = None
+    weight: float | None = None
     height: float | None = None
 
 

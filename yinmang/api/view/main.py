@@ -8,8 +8,10 @@ from fastapi import APIRouter,Depends,UploadFile,File
 from fastapi_pagination.ext.mongoengine import paginate
 from yinmang.models import Files , Students
 
+
 import datetime
 import json
+import pandas as pd
 
 router = APIRouter()
 
@@ -36,7 +38,7 @@ async def delete_student(student_id: str ,student_service : StudentService = Dep
 @router.post("/upload")
 async def upload_file(upload_file : UploadFile = File(...,description="Uploaded file")) :
     files = Files()
-    if upload_file.content_type in ['png', 'jpg', 'jpeg']:
+    if upload_file.content_type:
         files.file = upload_file.file
         files.status = "completed"
         files.file_name = upload_file.filename
@@ -53,3 +55,24 @@ async def students() -> list[ResponseStudents] :
 async def get_students(student_id:str)-> ResponseStudents :
     student = Students.objects.get(id=student_id)
     return student
+
+@router.post("/import_student_file")
+async def create_for_students_file(upload_file : UploadFile = File(...,description="Uploaded file Students")) -> list[ResponseStudents]:
+    df = pd.read_excel(upload_file.file)
+    student_show = []
+    for _,row in df.iterrows():
+        student = Students()
+        first_name = row["ชื่อ"]
+        last_name = row["นามสกุล"]
+        weight = row["น้ำหนัก"]
+        height = row["ส่วนสูง"]
+        print(f"{first_name} {last_name} น้ำหนัก {weight} ส่วนสูง {height}")
+        if upload_file :
+            student.first_name = first_name
+            student.last_name = last_name
+            student.weight = weight
+            student.height = height
+            student.save()
+            print("successful")
+        student_show.append(student)
+    return student_show
